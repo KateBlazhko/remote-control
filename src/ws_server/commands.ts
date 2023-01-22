@@ -1,5 +1,5 @@
-import { mouse, left, right, up, down, Button, straightTo } from '@nut-tree/nut-js';
-import readline from 'readline/promises';
+import { mouse, left, right, up, down, straightTo, Region, screen } from '@nut-tree/nut-js';
+import Jimp from 'jimp';
 
 const moveUp = async (value: number[]): Promise<void> => {
   const [moveOffset] = value;
@@ -63,6 +63,27 @@ const mousePosition = async (): Promise<string> => {
   return `${xPoint},${yPoint}`;
 };
 
+const prntScrn = async (): Promise<string> => {
+  const { x, y } = await mouse.getPosition();
+
+  const expectedRegion = new Region(
+    x - 100 >= 0 ? x - 100 : 0,
+    y - 100 >= 0 ? y - 100 : 0,
+    200,
+    200
+  );
+
+  await screen.highlight(expectedRegion);
+
+  const expectedImageBGR = await screen.grabRegion(expectedRegion);
+  const expectedImageRGB = await expectedImageBGR.toRGB();
+
+  const image = new Jimp(expectedImageRGB);
+  const buffer = await image.getBufferAsync(Jimp.MIME_PNG);
+
+  return buffer.toString('base64');
+};
+
 export const ACTIONS = {
   moveUp,
   moveDown,
@@ -72,4 +93,5 @@ export const ACTIONS = {
   drawSquare,
   drawCircle,
   mousePosition,
+  prntScrn,
 };

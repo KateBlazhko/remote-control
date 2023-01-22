@@ -9,4 +9,5 @@ export const COMMANDS: CommandsType = {
   draw_square: 'drawSquare',
   draw_circle: 'drawCircle',
   mouse_position: 'mousePosition',
+  prnt_scrn: 'prntScrn',
 };
