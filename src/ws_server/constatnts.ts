@@ -8,4 +8,5 @@ export const COMMANDS: CommandsType = {
   draw_rectangle: 'drawRectangle',
   draw_square: 'drawSquare',
   draw_circle: 'drawCircle',
+  mouse_position: 'mousePosition',
 };

@@ -1,4 +1,5 @@
 import { mouse, left, right, up, down, Button, straightTo } from '@nut-tree/nut-js';
+import readline from 'readline/promises';
 
 const moveUp = async (value: number[]): Promise<void> => {
   const [moveOffset] = value;
@@ -56,6 +57,12 @@ const drawCircle = async (value: number[]): Promise<void> => {
   }
 };
 
+const mousePosition = async (): Promise<string> => {
+  const { x: xPoint, y: yPoint } = await mouse.getPosition();
+
+  return `${xPoint},${yPoint}`;
+};
+
 export const ACTIONS = {
   moveUp,
   moveDown,
@@ -64,4 +71,5 @@ export const ACTIONS = {
   drawRectangle,
   drawSquare,
   drawCircle,
+  mousePosition,
 };

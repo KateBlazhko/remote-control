@@ -8,4 +8,5 @@ export type CommandsType = {
   draw_rectangle: keyof typeof ACTIONS;
   draw_square: keyof typeof ACTIONS;
   draw_circle: keyof typeof ACTIONS;
+  mouse_position: keyof typeof ACTIONS;
 };
