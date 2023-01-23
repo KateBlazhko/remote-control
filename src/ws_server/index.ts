@@ -1,7 +1,8 @@
-import { WebSocketServer } from 'ws';
-import { ACTIONS } from './commands.js';
-import { COMMANDS } from './constatnts.js';
-import { finishApp, mapStrArrayToNumArray } from './utils.js';
+import { Transform } from 'stream';
+import { pipeline } from 'stream/promises';
+import { WebSocketServer, createWebSocketStream } from 'ws';
+import { exеcuteCommand } from './commands.js';
+import { finishApp} from './utils.js';
 
 export const wsServerStart = (port: number) => {
   const wsServer = new WebSocketServer({ port, perMessageDeflate: false });
@@ -10,21 +11,16 @@ export const wsServerStart = (port: number) => {
   process.on('SIGINT', () => finishApp(wsServer));
 
   wsServer.on('connection', async (ws) => {
-    ws.on('message', async (data) => {
-      console.log(data.toString('utf8'));
+    const duplex = createWebSocketStream(ws, {encoding: 'utf8', decodeStrings: false});
 
-      const [commandName, ...commandValue] = data.toString('utf8').split(' ');
+    const transformStream = new Transform({
+    transform(data, _, callback) {
+      exеcuteCommand(data, callback) 
+    },
+    decodeStrings: false,
+    encoding: 'utf8'})
 
-      const result = await ACTIONS[COMMANDS[commandName as keyof typeof COMMANDS]](
-        mapStrArrayToNumArray(commandValue)
-      );
-
-      if (result) {
-        ws.send(`${commandName} ${result}`);
-      } else {
-        ws.send(data.toString('utf8'));
-      }
-    });
+    await pipeline(duplex, transformStream, duplex)
   });
 
   wsServer.on('close', () => {

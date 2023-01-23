@@ -1,5 +1,8 @@
 import { mouse, left, right, up, down, straightTo, Region, screen } from '@nut-tree/nut-js';
 import Jimp from 'jimp';
+import internal from 'stream';
+import { COMMANDS } from './constatnts.js';
+import { mapStrArrayToNumArray } from './utils.js';
 
 const moveUp = async (value: number[]): Promise<void> => {
   const [moveOffset] = value;
@@ -95,3 +98,22 @@ export const ACTIONS = {
   mousePosition,
   prntScrn,
 };
+
+export const exеcuteCommand = async (data: string, callback: internal.TransformCallback) => {
+  console.log(data);
+
+  const [commandName, ...commandValue] = data.split(' ');
+
+  const result = await ACTIONS[COMMANDS[commandName as keyof typeof COMMANDS]](
+    mapStrArrayToNumArray(commandValue)
+  );
+
+  if (result) {
+    callback(null, `${commandName} ${result}`)
+    return;
+    
+  } else {
+    callback(null, data)
+    return;
+  }
+}
