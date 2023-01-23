@@ -3,6 +3,9 @@ import { pipeline } from 'stream/promises';
 import { WebSocketServer, createWebSocketStream } from 'ws';
 import { exеcuteCommand } from './commands.js';
 import { finishApp} from './utils.js';
+// import readline from 'readline/promises';
+// const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+// rl.on('error', error => console.error(error.message));
 
 export const wsServerStart = (port: number) => {
   const wsServer = new WebSocketServer({ port, perMessageDeflate: false });
